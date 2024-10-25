@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sjad</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: white;
+            color: black;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            width: 350px;
+            padding: 30px;
+            background-color: #f9f9f9;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .toggle-btn {
+            background-color: #28a745;
+        }
+
+        .toggle-btn:hover {
+            background-color: #218838;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+        }
+
+        .circle-menu {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #007bff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .circle-menu:hover {
+            background-color: #0056b3;
+            transform: rotate(90deg);
+        }
+
+        .hidden-menu {
+            display: none;
+            position: absolute;
+            bottom: 100px;
+            right: 20px;
+        }
+
+        .hidden-menu .circle {
+            width: 50px;
+            height: 50px;
+            background-color: #007bff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 18px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .hidden-menu .circle:hover {
+            background-color: #0056b3;
+        }
+
+        .dark-mode {
+            background-color: #333;
+            color: white;
+        }
+
+        .dark-mode .container {
+            background-color: #444;
+        }
+
+        .dark-mode-btn {
+            background-color: #ffb3b3;
+        }
+
+        .dark-mode-btn:hover {
+            background-color: #ff8080;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container" id="authContainer">
+        <h2 id="formTitle">Login</h2>
+
+        <div id="loginForm">
+            <input type="text" id="loginUsername" placeholder="Username">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <p class="error" id="loginError"></p>
+            <button onclick="login()">Login</button>
+            <button class="toggle-btn" onclick="toggleForm()">Create an Account</button>
+        </div>
+
+        <div id="signupForm" style="display: none;">
+            <input type="text" id="signupUsername" placeholder="Username">
+            <input type="password" id="signupPassword" placeholder="Password">
+            <p class="error" id="signupError"></p>
+            <button onclick="signup()">Signup</button>
+            <button class="toggle-btn" onclick="toggleForm()">Already have an account? Login</button>
+        </div>
+    </div>
+
+    <!-- دائرة القائمة الرئيسية -->
+    <div class="circle-menu" onclick="toggleMenu()">☰</div>
+
+    <!-- القائمة المخفية -->
+    <div class="hidden-menu" id="hiddenMenu">
+        <div class="circle dark-mode-btn" onclick="toggleDarkMode()">☀️/🌙</div>
+        <div class="circle" onclick="toggleLanguage()">EN/AR</div>
+    </div>
+
+    <script>
+        function toggleForm() {
+            var loginForm = document.getElementById('loginForm');
+            var signupForm = document.getElementById('signupForm');
+            var formTitle = document.getElementById('formTitle');
+
+            if (loginForm.style.display === 'none') {
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+                formTitle.innerText = 'Login';
+            } else {
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+                formTitle.innerText = 'Signup';
+            }
+        }
+
+        function login() {
+            var username = document.getElementById('loginUsername').value;
+            var password = document.getElementById('loginPassword').value;
+            var error = document.getElementById('loginError');
+
+            var storedUsername = localStorage.getItem('username');
+            var storedPassword = localStorage.getItem('password');
+
+            if (username === storedUsername && password === storedPassword) {
+                alert('Login successful!');
+                error.textContent = '';
+            } else {
+                error.textContent = 'Invalid username or password';
+            }
+        }
+
+        function signup() {
+            var username = document.getElementById('signupUsername').value;
+            var password = document.getElementById('signupPassword').value;
+            var error = document.getElementById('signupError');
+
+            if (username.length >= 4 && password.length >= 6) {
+                localStorage.setItem('username', username);
+                localStorage.setItem('password', password);
+                alert('Account created successfully!');
+                error.textContent = '';
+                toggleForm(); // Switch to login form after successful signup
+            } else {
+                error.textContent = 'Username must be at least 4 characters and password at least 6 characters.';
+            }
+        }
+
+        function toggleDarkMode() {
+            var body = document.body;
+            body.classList.toggle('dark-mode');
+        }
+
+        function toggleMenu() {
+            var hiddenMenu = document.getElementById('hiddenMenu');
+            hiddenMenu.style.display = hiddenMenu.style.display === 'none' || hiddenMenu.style.display === '' ? 'block' : 'none';
+        }
+
+        function toggleLanguage() {
+            var body = document.body;
+            var formTitle = document.getElementById('formTitle');
+            var loginForm = document.getElementById('loginForm');
+            var signupForm = document.getElementById('signupForm');
+
+            if (body.lang === 'en') {
+                body.lang = 'ar';
+                formTitle.innerText = 'تسجيل الدخول';
+                loginForm.querySelector('input[placeholder="Username"]').placeholder = 'اسم المستخدم';
+                loginForm.querySelector('input[placeholder="Password"]').placeholder = 'كلمة المرور';
+                signupForm.querySelector('input[placeholder="Username"]').placeholder = 'اسم المستخدم';
+                signupForm.querySelector('input[placeholder="Password"]').placeholder = 'كلمة المرور';
+                loginForm.querySelector('button').innerText = 'تسجيل الدخول';
+                signupForm.querySelector('button').innerText = 'إنشاء حساب';
+                document.querySelector('.toggle-btn').innerText = 'إنشاء حساب';
+            } else {
+                body.lang = 'en';
+                formTitle.innerText = 'Login';
+                loginForm.querySelector('input[placeholder="اسم المستخدم"]').placeholder = 'Username';
+                loginForm.querySelector('input[placeholder="كلمة المرور"]').placeholder = 'Password';
+                signupForm.querySelector('input[placeholder="اسم المستخدم"]').placeholder = 'Username';
+                signupForm.querySelector('input[placeholder="كلمة المرور"]').placeholder = 'Password';
+                loginForm.querySelector('button').innerText = 'Login';
+                signupForm.querySelector('button').innerText = 'Signup';
+                document.querySelector('.toggle-btn').innerText = 'Create an Account';
+            }
+        }
+    </script>
+
+</body>
+</html>
